@@ -82,13 +82,13 @@ pcl::Poisson<PointNT>::setThreads (int threads)
       
 //////////////////////////////////////////////////////////////////////////////////////////////
 template <typename PointNT> template <int Degree> void
-pcl::Poisson<PointNT>::execute (poisson::CoredVectorMeshData &mesh,
-                                poisson::Point3D<float> &center,
-                                float &scale)
+pcl::Poisson<PointNT>::execute (poisson::CoredVectorMeshData &mesh,//输出
+                                poisson::Point3D<float> &center,//输出
+                                float &scale)//默认scale = 1.0
 {
   pcl::poisson::Real iso_value = 0;
-  poisson::TreeNodeData::UseIndex = 1;
-  poisson::Octree<Degree> tree;
+  poisson::TreeNodeData::UseIndex = 1;//poisson自带的数据结构
+  poisson::Octree<Degree> tree;//poisson自带的数据结构
 
   
   tree.threads = threads_;
@@ -108,13 +108,15 @@ pcl::Poisson<PointNT>::execute (poisson::CoredVectorMeshData &mesh,
 
   pcl::poisson::TreeOctNode::SetAllocator (MEMORY_ALLOCATOR_BLOCK_SIZE);
 
-  kernel_depth_ = depth_ - 2;
+  kernel_depth_ = depth_ - 2;//depth_ = 树的最大深度
 
+  //poisson自带的数据
   tree.setBSplineData (depth_, static_cast<pcl::poisson::Real>(1.0 / (1 << depth_)), true);
 
   tree.maxMemoryUsage = 0;
 
-
+  //pcl::PointNormal = PointNT
+  //全是泊松重建原生代码的函数
   int point_count = tree.template setTree<PointNT> (input_, depth_, min_depth_, kernel_depth_, samples_per_node_,
                                                     scale_, center, scale, confidence_, point_weight_, !non_adaptive_weights_);
 
@@ -152,7 +154,7 @@ pcl::Poisson<PointNT>::performReconstruction (PolygonMesh &output)
     execute<1> (mesh, center, scale);
     break;
   }
-  case 2:
+  case 2://默认值是2 值越大越精细，耗时越久。 由 setDegree 函数设置
   {
     execute<2> (mesh, center, scale);
     break;

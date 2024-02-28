@@ -57,7 +57,7 @@ namespace pcl
     * \author Alexandru-Eugen Ichim
     * \ingroup surface
     */
-  template<typename PointNT>
+  template<typename PointNT>//历程中PointNT = PointNormal
   class Poisson : public SurfaceReconstruction<PointNT>
   {
     public:
@@ -82,7 +82,7 @@ namespace pcl
         * \param[out] output the resultant polygonal mesh
         */
       void
-      performReconstruction (pcl::PolygonMesh &output) override;
+      performReconstruction (pcl::PolygonMesh &output) override;//搜索 pcl::Poisson<PointNT>::performReconstruction (PolygonMesh &output)
 
       /** \brief Create the surface.
         * \param[out] points the vertex positions of the resulting mesh
